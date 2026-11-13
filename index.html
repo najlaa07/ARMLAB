@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARMLAB | Clinical Dashboard</title>
+<style>
+:root{--navy:#101d32;--navy2:#182a45;--bg:#f4f7fb;--card:#fff;--ink:#17263c;--muted:#718096;--line:#e6ecf3;--teal:#16a6a1;--blue:#4b83df;--amber:#d8952f;--red:#d65b66;--green:#2d9d78;--shadow:0 8px 24px rgba(28,48,76,.06)}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial;color:var(--ink)}button{font:inherit;cursor:pointer}.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.sidebar{background:var(--navy);color:#dce7f5;padding:26px 17px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:11px;padding:2px 10px 30px}.mark{width:37px;height:37px;border-radius:12px;background:linear-gradient(135deg,#28c4b8,#3678d8);display:grid;place-items:center;color:white;font-weight:800;font-size:19px}.brand b{font-size:19px;letter-spacing:1.4px;color:#fff}.brand small{display:block;color:#8ea5c2;font-size:10px;letter-spacing:2px;margin-top:2px}.navlabel{font-size:10px;letter-spacing:1.6px;color:#7890ae;padding:12px 12px 8px}.nav button{border:0;background:transparent;color:#aebed2;width:100%;text-align:left;padding:12px;border-radius:10px;margin:2px 0;display:flex;align-items:center;gap:12px;font-size:13px}.nav button.active,.nav button:hover{background:#203652;color:#fff}.ico{width:19px;text-align:center;font-size:16px}.sidefoot{margin-top:auto;border-top:1px solid #2b3d55;padding:18px 9px 0;color:#8fa3bc;font-size:11px;line-height:1.6}.main{min-width:0}.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px}.crumb{font-size:12px;color:var(--muted)}.crumb b{color:var(--ink);font-weight:650}.topright{display:flex;align-items:center;gap:17px}.demo{font-size:10px;font-weight:750;letter-spacing:1px;color:#9a681c;background:#fff5df;padding:7px 10px;border-radius:20px}.avatar{width:34px;height:34px;border-radius:50%;background:#e2f2f1;color:#167d7a;display:grid;place-items:center;font-weight:700;font-size:12px}.content{padding:29px 34px 40px;max-width:1500px;margin:auto}.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:23px}.eyebrow{font-size:10px;letter-spacing:1.8px;color:var(--teal);font-weight:800}.heading h1{font-size:25px;margin:7px 0 5px;letter-spacing:-.5px}.sub{color:var(--muted);font-size:12px}.date{background:#fff;border:1px solid var(--line);padding:10px 13px;border-radius:9px;color:#5e6d80;font-size:11px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}.stat{padding:17px 18px}.stathead{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.staticon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#edf7f7;color:var(--teal);font-size:15px}.value{font-size:27px;font-weight:720;letter-spacing:-1px;margin:12px 0 3px}.unit{font-size:11px;color:var(--muted);font-weight:500}.trend{font-size:10px;color:var(--green)}.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(270px,.9fr);gap:17px}.panel{padding:19px 20px;margin-bottom:17px}.panelhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.panel h3{font-size:13px;margin:0}.muted{font-size:10px;color:var(--muted)}.chartwrap{height:210px;position:relative}.chartwrap svg{width:100%;height:100%;overflow:visible}.gridline{stroke:#edf1f6;stroke-width:1}.axis{font-size:9px;fill:#95a2b2}.chartline{fill:none;stroke:var(--teal);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.area{fill:url(#fill)}.legend{display:flex;gap:17px;font-size:10px;color:var(--muted);margin-top:7px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--teal);margin-right:5px}
+.alerts{display:flex;flex-direction:column;gap:10px}
+.alert{display:flex;gap:10px;padding:11px;border-radius:10px;background:#fff9ef;border:1px solid #f5e8ce}
+.alert.red{background:#fff5f5;border-color:#f3dddd}
+.alert .bullet{width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:4px;flex:none}
+.alert.red .bullet{background:var(--red)}
+.alert b{display:block;font-size:11px;margin-bottom:3px}
+.alert p{margin:0;color:#7d8794;font-size:10px;line-height:1.5}
+.alert[hidden] {
+    display: none !important;
+}
+.patientlist{display:flex;flex-direction:column;gap:8px}
+.patient{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.patient.selected{border-color:#8ad3cf;background:#f1fbfa}
+.pavatar{width:31px;height:31px;border-radius:50%;background:#edf1f7;display:grid;place-items:center;font-size:10px;font-weight:700;color:#536780}
+.pinfo{flex:1;min-width:0}
+.pinfo b{font-size:11px;display:block}
+.pinfo small{font-size:9px;color:var(--muted)}
+.status{font-size:9px;padding:5px 7px;border-radius:12px;background:#e9f7f1;color:#27805f}
+.status.watch{background:#fff3df;color:#a66c19}
+.footer-note{font-size:10px;color:#8793a2;text-align:center;padding:9px 0 0}
+.section{display:none}.section.active{display:block}
+.table{width:100%;border-collapse:collapse;font-size:11px}
+.table th{text-align:left;color:#8592a2;font-weight:600;font-size:9px;letter-spacing:.6px;padding:10px;border-bottom:1px solid var(--line)}.table td{padding:12px 10px;border-bottom:1px solid #f0f3f7}.pill{font-size:9px;border-radius:12px;padding:5px 8px;background:#eaf7f1;color:#27805f}.pill.warn{background:#fff3df;color:#a66c19}.btn{border:0;background:var(--navy2);color:white;padding:10px 14px;border-radius:8px;font-size:10px}.btn.light{background:#edf4f7;color:#456174}.mobilemenu{display:none}.alerttools{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.alerttools input,.alerttools select{border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:#fff;color:var(--ink);font:inherit;font-size:11px}.alertrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.alertmeta{display:flex;gap:7px;align-items:center;margin-top:7px}.reviewbtn{border:1px solid var(--line);background:white;color:#526276;border-radius:7px;padding:7px 9px;font-size:10px;white-space:nowrap}.reviewed{opacity:.58}.reviewed .reviewbtn{background:#e9f7f1;color:#27805f;border-color:#d3eee2}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.topbar{padding:0 18px}.content{padding:22px 18px}.mobilemenu{display:block;border:0;background:transparent;font-size:20px}.heading h1{font-size:22px}}
+@media(max-width:480px){.stats{gap:9px}.stat{padding:13px}.value{font-size:23px}.heading{flex-direction:column}.date{align-self:flex-start}.topbar{height:64px}.demo{font-size:8px}}
+</style></head>
+<body><div class="app">
+<aside class="sidebar"><div class="brand"><div class="mark">A</div><div><b>ARMLAB</b><small>CARE INTELLIGENCE</small></div></div><div class="navlabel">WORKSPACE</div><nav class="nav"><button class="active" data-page="overview"><span class="ico">▦</span>Overview</button><button data-page="patients"><span class="ico">♙</span>Patients</button><button data-page="profile"><span class="ico">▤</span>Patient Profile</button><button data-page="monitoring"><span class="ico">⌁</span>Live Monitoring</button><button data-page="alerts"><span class="ico">♧</span>Alerts</button><button data-page="history"><span class="ico">◷</span>Reading History</button></nav><div class="navlabel">SYSTEM</div><nav class="nav"><button data-page="settings"><span class="ico">⚙</span>Settings</button></nav><div class="sidefoot">ARMLAB Clinical Platform<br>Prototype interface · v1.3</div></aside>
+<main class="main"><header class="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="mobilemenu" aria-label="Menu">☰</button><div class="crumb">Workspace&nbsp; / &nbsp;<b id="crumb">Overview</b></div></div><div class="topright"><span class="demo">● DEMO DATA</span><div class="avatar">DR</div></div></header>
+<div class="content"><div class="heading"><div><div class="eyebrow">CLINICAL OVERVIEW</div><h1 id="pageTitle">Good evening, Doctor</h1><div class="sub" id="pageSub">Here is the monitoring summary for your patients.</div></div><div class="date">◷ &nbsp; <span id="today"></span></div></div>
+<section class="section active" id="overview">
+ <div class="stats">
+    <div class="card stat">
+        <div class="stathead">Total patients</div>
+        <div class="value" id="overviewPatients">--</div>
+        <div class="trend">Registered patients</div>
+    </div>
+
+<div class="card stat">
+    <div class="stathead">Total readings</div>
+    <div class="value" id="overviewReadings">--</div>
+    <div class="trend">Stored demo readings</div>
+</div>
+
+<div class="card stat">
+    <div class="stathead">Patterns to review</div>
+    <div class="value" id="overviewAlerts">--</div>
+    <div class="trend">Requires review</div>
+</div>
+
+<div class="card stat">
+    <div class="stathead">Connected devices</div>
+    <div class="value">0</div>
+    <div class="trend">No physical device connected</div>
+</div>
+</div>
+ 
+    
+<div class="layout">
+    <div>
+        <div class="card panel">
+            <div class="panelhead">
+                <div>
+                    <h3>Patient readings overview</h3>
+                    <div class="muted" style="margin-top:4px">Heart rate · Selected patient: Sarah M.</div>
+                </div>
+                <button class="btn light" id="rangeBtn">Last 24 hours⌄</button>
+            </div>
+            <div class="chartwrap">
+                <svg id="overviewHeartRateChart" viewBox="0 0 640 210" preserveAspectRatio="none">
+    <line class="gridline" x1="42" y1="25" x2="625" y2="25"/>
+    <line class="gridline" x1="42" y1="70" x2="625" y2="70"/>
+    <line class="gridline" x1="42" y1="115" x2="625" y2="115"/>
+    <line class="gridline" x1="42" y1="160" x2="625" y2="160"/>
+<text class="axis" x="4" y="28">120</text>
+<text class="axis" x="4" y="73">100</text>
+<text class="axis" x="10" y="118">80</text>
+<text class="axis" x="10" y="163">60</text>
+
+<text class="axis" x="42" y="198">Previous</text>
+<text class="axis" x="570" y="198">Latest</text>
+</svg>
+
+                
+            </div>
+            <div class="legend">
+                <span><i class="dot">
+                </i>Heart rate (bpm)</span>
+                <span>Illustrative trend · simulated</span>
+            </div>
+        </div>
+<div class="card panel"><div class="panelhead">
+    <h3>Recent patient readings</h3>
+    <button class="btn light" data-goto="history">View history</button>
+</div><table class="table"><thead>
+    <tr>
+        <th>PATIENT</th>
+        <th>HEART RATE</th>
+        <th>TEMP.</th>
+        <th>STATUS</th>
+    </tr>
+</thead>
+<tbody id="overviewRecentReadings">
+</tbody>
+    </table>
+    <div class="muted" style="margin-top:10px">*Temperature values are illustrative skin-temperature readings, not core body temperature.</div>
+</div>
+</div>
+<div>
+    <div class="card panel">
+        <div class="panelhead">
+            <h3>Patterns to review</h3>
+            <span class="muted">03 items</span>
+        </div>
+       <div class="alerts" id="overviewAlertsList">
+       </div>
+        <div class="footer-note">Demo alerts only — not clinical diagnoses.</div>
+    </div>
+<div class="card panel">
+    <div class="panelhead">
+        <h3>Patient list</h3>
+        <button class="btn light" data-goto="patients">See all</button>
+    </div>
+    <div class="patientlist" id="overviewPatientList">
+
+    </div>
+    </div>
+</div>
+</div>
+</div>
+<div class="footer-note">ARMLAB is a concept prototype. All patient names, readings, trends and alerts shown are fictional demo data.</div>
+</section>
+<section class="section" id="patients">
+    <div class="card panel">
+        <div class="panelhead">
+            <h3>Patients</h3>
+            <span class="muted">Sample patient directory</span>
+        </div>
+        
+        <table class="table">
+    <thead>
+        <tr>
+            <th>PATIENT NAME</th>
+            <th>AGE</th>
+            <th>LAST UPDATE</th>
+            <th>MONITORING GROUP</th>
+        </tr>
+    </thead>
+<tbody id="patientsTableBody">
+</tbody>
+    
+</table>
+                <p class="muted">Fictional entries for interface demonstration.</p></div></section>
+<section class="section" id="profile">
+    <div class="card panel">
+<div class="panelhead">
+        <div>
+            <h3>Patient profile</h3>
+            <span class="muted">Patient record · Demo data</span>
+        </div>
+
+        <select id="profilePatient" style="padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink)">
+            <option value="">Select a patient</option>
+        </select>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0 20px">
+        <div class="pavatar" id="profileAvatar" style="width:54px;height:54px;font-size:15px">AR</div>
+        <div>
+            <h2 id="profileName" style="font-size:18px;margin:0 0 4px">Select a patient</h2>
+            <div class="muted" id="profileId">Patient ID</div>
+        </div>
+        <span class="status" id="profileStatus" style="margin-left:auto">Demo</span>
+    </div>
+
+    <div class="stats" style="margin-bottom:12px">
+
+        <div class="card stat">
+            <div class="stathead">Latest heart rate</div>
+            <div class="value">
+                <span id="profileHr">--</span>
+                <span class="unit"> bpm</span>
+            </div>
+            <div class="muted">PPG-derived value</div>
+        </div>
+
+        <div class="card stat">
+            <div class="stathead">Skin temperature</div>
+            <div class="value">
+                <span id="profileTemp">--</span>
+                <span class="unit"> °C</span>
+            </div>
+            <div class="muted">Sensor-site temperature</div>
+        </div>
+
+        <div class="card stat">
+            <div class="stathead">GSR signal</div>
+            <div class="value">
+                <span id="profileGsr">--</span>
+                <span class="unit"> µS*</span>
+            </div>
+            <div class="muted">Sensor signal value</div>
+        </div>
+
+    </div>
+
+    <div class="layout">
+
+        <div class="card panel">
+            <div class="panelhead">
+                <h3>Monitoring notes</h3>
+                <span class="muted">Demo record</span>
+            </div>
+
+            <p class="sub" id="profileNote">
+                Select a patient to view their monitoring information.
+            </p>
+
+            <div style="margin-top:16px">
+                <button class="btn" data-goto="monitoring">
+                    Open live monitoring
+                </button>
+            </div>
+        </div>
+
+        <div class="card panel">
+            <div class="panelhead">
+                <h3>Recent readings</h3>
+                <span class="muted">Reading history</span>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>TIME</th>
+                        <th>HR</th>
+                        <th>SKIN TEMP.</th>
+                    </tr>
+                </thead>
+                <tbody id="profileHistory">
+                    <tr>
+                        <td colspan="3">Select a patient</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <p class="muted" style="margin-top:12px">
+        *GSR interpretation depends on electrode placement and calibration.
+        Demo data only; not a medical record.
+    </p>
+
+</div>
+</section>
+
+<section class="section" id="monitoring">
+    <div class="card panel">
+<div class="panelhead">
+        <div>
+            <h3>Live Monitoring</h3>
+            <span class="muted">Select a demo patient and refresh the simulated readings.</span>
+        </div>
+        <span class="demo">SIMULATED FEED</span>
+    </div>
+
+    <!-- Patient Selection -->
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0">
+        <label class="muted" for="demoPatient">Patient</label>
+        <select id="demoPatient" style="padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink)">
+            <option value="AR-001">AR-001</option>
+            <option value="AR-002">AR-002</option>
+            <option value="AR-003">AR-003</option>
+            <option value="AR-004">AR-004</option>
+            <option value="AR-005">AR-005</option>
+        </select>
+        <span id="demoPatientName"></span>
+    </div>
+
+    <!-- Reading Cards -->
+    <div class="stats" style="margin-top:18px">
+
+        <div class="card stat">
+            <div class="stathead">Heart rate</div>
+            <div class="value">
+                <span id="hrValue">--</span>
+                <span class="unit">bpm</span>
+            </div>
+        </div>
+
+        <div class="card stat">
+            <div class="stathead">Skin temperature</div>
+            <div class="value">
+                <span id="tempValue">--</span>
+                <span class="unit">°C</span>
+            </div>
+        </div>
+
+        <div class="card stat">
+            <div class="stathead">GSR signal</div>
+            <div class="value">
+                <span id="gsrValue">--</span>
+            </div>
+        </div>
+
+        <div class="card stat">
+            <div class="stathead">Device status</div>
+            <div class="value" style="font-size:19px;color:var(--amber)">
+                Simulation
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Refresh -->
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0">
+        <button class="btn" id="refreshReadings">Refresh readings</button>
+        <span class="muted" id="readingTime">Loading latest reading...</span>
+    </div>
+
+    <!-- AI Analysis -->
+    <div class="card panel" style="margin-top:15px;background:#f8fbfd;box-shadow:none">
+        <div class="panelhead">
+            <h3>AI Analysis</h3>
+            <span class="demo">FUTURE DEVELOPMENT</span>
+        </div>
+        <p class="sub">
+            AI analysis is not activated yet. This section will display detected patterns from patient readings in a future development phase.
+        </p>
+    </div>
+
+    <p class="muted">
+        Demo data only. No physical sensor is connected.
+    </p>
+
+</div>
+</section>
+<section class="section" id="alerts">
+    <div class="card panel">
+        <div class="panelhead">
+            <div><h3>Alerts & review queue</h3>
+                <span class="muted">Illustrative notifications generated from demo records</span>
+            </div><span class="demo">DEMO ONLY</span>
+        </div>
+        <div class="alerttools">
+            <input id="alertSearch" type="search" placeholder="Search patient or alert...">
+            <select id="alertFilter">
+                <option value="all">All alerts</option>
+                <option value="open">Needs review</option>
+                <option value="reviewed">Reviewed</option>
+            </select>
+        </div>
+        <div class="alerts" id="alertList">
+</div>
+<p class="footer-note" id="alertEmpty" hidden>No alerts match this filter.</p>
+</div>
+<p class="muted">These are demonstration alerts, not outputs from a trained AI model or a medical assessment.</p>
+</section>
+<section class="section" id="history">
+    <div class="card panel">
+        <div class="panelhead">
+            <h3>Reading history</h3>
+            <span class="muted">Sample records</span>
+        </div><table class="table">
+            <thead><tr><th>TIME</th>
+                <th>PATIENT</th>
+                <th>HEART RATE</th>
+                <th>SKIN TEMP.</th>
+                <th>NOTE</th>
+            </tr></thead>
+            <tbody id="historyBody"></tbody>
+        </table></div></section>
+<section class="section" id="settings">
+    <div class="card panel">
+        <h3>Platform settings</h3>
+        <p class="sub">Prototype settings will be added in a later version.</p>
+        <p class="muted">Authentication, role permissions, secure data transfer and device pairing are planned features, not active functions in this offline demo.</p>
+    </div>
+</section>
+</div></main></div>
+<script>
+const titles={overview:['Good evening, Doctor','Here is the monitoring summary for your patients.'],patients:['Patients','Review the patient directory and their latest demo status.'],profile:['Patient Profile','Review one patient’s illustrative health readings and monitoring history.'],monitoring:['Live Monitoring','Illustrative sensor readings in a simulated feed.'],alerts:['Alerts & Review','Review example notifications generated from demo data.'],history:['Reading History','Explore illustrative readings recorded over time.'],settings:['Settings','Platform configuration and security features.']};
+function showPage(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('crumb').textContent=id==='overview'?'Overview':titles[id][0];document.getElementById('pageTitle').textContent=titles[id][0];document.getElementById('pageSub').textContent=titles[id][1];}
+document.querySelectorAll('.nav button[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.goto)));document.querySelectorAll('.patient').forEach(p=>p.addEventListener('click',()=>{document.querySelectorAll('.patient').forEach(x=>x.classList.remove('selected'));p.classList.add('selected')}));document.getElementById('today').textContent=new Intl.DateTimeFormat('en',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).format(new Date());document.querySelector('.mobilemenu').addEventListener('click',()=>alert('On smaller screens, use the page navigation in the desktop layout preview.'));
+const demoProfiles={'Sarah M. · 0018':{hr:[76,82,88,79,84],temp:[36.5,36.8,36.9,36.7],gsr:[3.8,4.2,4.5,4.0]},'Omar A. · 0021':{hr:[96,106,101,112,104],temp:[37.1,37.4,37.2,37.5],gsr:[4.8,5.2,4.9,5.4]},'Lina K. · 0024':{hr:[70,76,73,79,75],temp:[36.4,36.6,36.5,36.7],gsr:[3.5,3.9,3.7,4.0]}};
+
+const profileData={
+ 'Sarah M.':{id:'0018',initials:'SM',hr:82,temp:'36.8',gsr:'4.2',status:'Stable pattern',note:'No unusual pattern flagged in this sample. Continue routine monitoring according to the care team’s protocol.',history:[['18:10','82','36.8 °C'],['17:40','80','36.7 °C'],['17:10','84','36.8 °C']]},
+ 'Omar A.':{id:'0021',initials:'OA',hr:106,temp:'37.4',gsr:'5.2',status:'Review',note:'This illustrative sample meets a demonstration review rule. It requires clinical context and is not a diagnosis.',history:[['17:52','106','37.4 °C'],['17:20','101','37.2 °C'],['16:50','98','37.1 °C']]},
+ 'Lina K.':{id:'0024',initials:'LK',hr:76,temp:'36.6',gsr:'3.9',status:'Stable pattern',note:'No unusual pattern flagged in this sample. Continue routine monitoring according to the care team’s protocol.',history:[['17:40','76','36.6 °C'],['17:10','73','36.5 °C'],['16:40','75','36.6 °C']]}
+};
+function updateProfile(){const n=document.getElementById('profilePatient')?.value;const d=profileData[n];if(!d)return;document.getElementById('profileName').textContent=n;document.getElementById('profileId').textContent='Patient ID · '+d.id;document.getElementById('profileAvatar').textContent=d.initials;document.getElementById('profileHr').textContent=d.hr;document.getElementById('profileTemp').textContent=d.temp;document.getElementById('profileGsr').textContent=d.gsr;document.getElementById('profileStatus').textContent=d.status;document.getElementById('profileStatus').className=d.status==='Review'?'status watch':'status';document.getElementById('profileNote').textContent=d.note;document.getElementById('profileHistory').innerHTML=d.history.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');}
+
+const alertSearch=document.getElementById('alertSearch'),alertFilter=document.getElementById('alertFilter');
+function filterAlerts()
+{const q=(alertSearch.value||'').toLowerCase(),f=alertFilter.value;let shown=0;
+document.querySelectorAll('#alertList .alert')
+.forEach(a=>{const match=(a.textContent+' '+a.dataset.patient)
+.toLowerCase().includes(q);const statusMatch=f==='all'||a.dataset.status===f;a.hidden=!(match&&statusMatch);if(!a.hidden)shown++;});
+document.getElementById('alertEmpty').hidden=shown>0;}
+alertSearch.addEventListener('input',filterAlerts);
+alertFilter.addEventListener('change',filterAlerts);
+document.querySelectorAll('#alertList .reviewbtn')
+.forEach(btn=>btn.addEventListener('click',()=>{const row=btn.closest('.alert');
+row.dataset.status='reviewed';
+row.classList.add('reviewed');
+row.querySelector('.pill').textContent='Reviewed';
+row.querySelector('.pill').className='pill';btn.textContent='Reviewed';btn.disabled=true;filterAlerts();}));
+
+document.getElementById('profilePatient')?.addEventListener('change',updateProfile);
+document.querySelectorAll('#patients tbody tr').forEach((row,i)=>{row.style.cursor='pointer';row.title='Open patient profile';row.addEventListener('click',()=>{document.getElementById('profilePatient').selectedIndex=i;updateProfile();showPage('profile');});});
+document.querySelectorAll('.patient').forEach((row,i)=>{row.addEventListener('dblclick',()=>{document.getElementById('profilePatient').selectedIndex=i;updateProfile();showPage('profile');});});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://vlbxycapyyzscsvdcmjx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_lTRP90kCLnWLwueb7Ai97Q_AT8Wzs-y";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+async function testConnection() {
+    const { data: patients, error: patientsError } =
+        await supabaseClient.from("patients").select("*");
+
+    const { data: readings, error: readingsError } =
+        await supabaseClient.from("readings").select("*");
+
+    if (patientsError || readingsError) {
+        console.error("Connection error:", patientsError || readingsError);
+        return;
+    }
+
+    console.log("Patients:", patients);
+    console.log("Readings:", readings);
+}
+async function loadPatients() { 
+    const { data: patients, error } = 
+    await supabaseClient 
+    .from("patients") 
+    .select("*");
+
+if (error) {
+    console.error("Patients error:", error);
+    return;
+}
+
+const tableBody = document.getElementById("patientsTableBody");
+
+tableBody.innerHTML = patients.map(patient => `
+    <tr>
+       <td>${patient.patient_name}</td>
+    <td>${patient.age}</td>
+        <td>${new Date(patient.created_at).toLocaleString()}</td>
+        <td><span class="pill">${patient.monitoring_group}</span></td>
+    </tr>
+`).join("");
+}
+async function loadReadings() {
+     const { data: readings, error } = await supabaseClient 
+     .from("readings") 
+     .select("*") 
+     .order("created_at", { ascending: false })
+     .order("id", { ascending: false })
+if (error) {
+    console.error("Readings error:", error);
+    return;
+}
+const { data: patients, error: patientsError } = await supabaseClient
+    .from("patients")
+    .select("patient_code, patient_name");
+
+if (patientsError) {
+    console.error("Patients error:", patientsError);
+    return;
+}
+
+const patientNames = Object.fromEntries(
+    patients.map(patient => [patient.patient_code, patient.patient_name])
+);
+
+const tableBody = document.querySelector("#historyBody");
+
+tableBody.innerHTML = readings.map(reading => `
+    <tr>
+        <td>${new Date(reading.created_at).toLocaleString()}</td>
+        <td>${patientNames[reading.patient_code] || reading.patient_code}</td>
+        <td>${reading.heart_rate} bpm</td>
+        <td>${reading.skin_temp_c} °C</td>
+        <td>${reading.source || "Sample"}</td>
+    </tr>
+`).join("");
+}
+async function loadLatestReading() {
+const patientCode = document.getElementById("demoPatient").value;
+const { data, error } = await supabaseClient
+    .from("readings")
+    .select("*")
+    .eq("patient_code", patientCode)
+    .order("id", { ascending: false })
+   
+
+if (error) {
+    console.error("Live Monitoring error:", error);
+    return;
+}
+const { data: patient, error: patientError } = await supabaseClient
+    .from("patients")
+    .select("patient_name")
+    .eq("patient_code", patientCode)
+    .single();
+
+if (patientError) {
+    console.error("Patient name error:", patientError);
+    return;
+}
+
+document.getElementById("demoPatientName").textContent = patient.patient_name;
+document.getElementById("hrValue").textContent = data.heart_rate;
+document.getElementById("tempValue").textContent = data.skin_temp_c;
+document.getElementById("gsrValue").textContent = data.gsr;
+
+document.getElementById("readingTime").textContent =
+    "Last reading: " + new Date(data.created_at).toLocaleString();
+}
+async function loadProfilePatients() {
+const { data: patients, error } = await supabaseClient
+.from("patients")
+.select("patient_code ,patient_name");
+if (error) {
+    console.error("Profile patients error:", error);
+    return;
+}
+
+const select = document.getElementById("profilePatient");
+
+select.innerHTML = patients.map(patient => `
+    <option value="${patient.patient_code}">
+        ${patient.patient_name}
+    </option>
+`).join("");
+await loadPatientProfile();
+}
+async function loadPatientProfile() {
+const patientCode = document.getElementById("profilePatient").value;
+const { data: readings, error } = await supabaseClient
+    .from("readings")
+    .select("*")
+    .eq("patient_code", patientCode)
+    .order("id", { ascending: false });
+
+if (error) {
+    console.error("Profile readings error:", error);
+    return;
+}
+
+if (!readings || readings.length === 0) return;
+
+const latest = readings[0];
+
+const { data: patient, error: patientError } = await supabaseClient
+    .from("patients")
+    .select("patient_name, age")
+    .eq("patient_code", patientCode)
+    .single();
+
+if (patientError) {
+    console.error("Patient profile error:", patientError);
+    return;
+}
+
+document.getElementById("profileName").textContent = patient.patient_name;
+document.getElementById("profileId").textContent = "Age · " + patient.age;
+document.getElementById("profileAvatar").textContent =
+    patient.patient_name.split(" ").map(name => name[0]).join("");
+document.getElementById("profileHr").textContent = latest.heart_rate;
+document.getElementById("profileTemp").textContent = latest.skin_temp_c;
+document.getElementById("profileGsr").textContent = latest.gsr;
+
+document.getElementById("profileHistory").innerHTML =
+    readings.slice(0, 5).map(reading => `
+        <tr>
+            <td>${new Date(reading.created_at).toLocaleTimeString()}</td>
+            <td>${reading.heart_rate}</td>
+            <td>${reading.skin_temp_c} °C</td>
+        </tr>
+    `).join("");
+    }
+async function loadAlerts() {
+const { data: readings, error } = await supabaseClient
+.from("readings")
+.select("*")
+.order("id", { ascending: false });
+if (error) {
+    console.error("Alerts error:", error);
+    return;
+}
+const { data: patientData, error: patientError } = await supabaseClient
+    .from("patients")
+    .select("patient_code, patient_name");
+
+if (patientError) {
+    console.error("Patient names error:", patientError);
+    return;
+}
+
+const patientNames = Object.fromEntries(
+    patientData.map(patient => [patient.patient_code, patient.patient_name])
+);
+
+const { data: reviews, error: reviewsError } = await supabaseClient
+    .from("alert_reviews")
+    .select("patient_code, status");
+
+if (reviewsError) {
+    console.error("Alert reviews error:", reviewsError);
+    return;
+}
+
+const reviewStatuses = Object.fromEntries(
+    reviews.map(review => [review.patient_code, review.status])
+);
+const { data: ranges, error: rangesError } = await supabaseClient
+    .from("reference_ranges")
+    .select("metric, min_value, max_value, unit");
+
+if (rangesError) {
+    console.error("Reference ranges error:", rangesError);
+    return;
+}
+
+const referenceRanges = Object.fromEntries(
+    ranges.map(range => [range.metric, range])
+);
+
+const alertList = document.getElementById("alertList");
+alertList.innerHTML = "";
+
+const patients = [...new Set(readings.map(r => r.patient_code))];
+
+
+patients.forEach(patientCode => {
+    const patientReadings = readings.filter(
+        r => r.patient_code === patientCode
+    );
+
+    if (patientReadings.length < 2) return;
+
+    const latest = patientReadings[0];
+    const previous = patientReadings[1];
+    const needsReview = (reviewStatuses[patientCode] || "open") === "open";
+
+   const changes = [];
+
+const metrics = [
+{ key: "heart_rate", label: "Heart Rate" },
+{ key: "skin_temp_c", label: "Skin Temperature" }
+];
+
+metrics.forEach(metric => {
+const range = referenceRanges[metric.key];
+const value = Number(latest[metric.key]);
+
+if (!range || latest[metric.key] == null) return;
+
+if (value < Number(range.min_value)) {
+    changes.push({
+        label: metric.label,
+        value,
+        unit: range.unit,
+        min: range.min_value,
+        max: range.max_value,
+        condition: "Below reference range"
+    });
+} else if (value > Number(range.max_value)) {
+    changes.push({
+        label: metric.label,
+        value,
+        unit: range.unit,
+        min: range.min_value,
+        max: range.max_value,
+        condition: "Above reference range"
+    });
+}
+});
+
+if (changes.length === 0) return;
+
+    alertList.innerHTML += `
+        <div class="alert ${needsReview ? "" : "reviewed"}"
+     data-patient="${patientCode}"
+     data-status="${needsReview ? "open" : "reviewed"}">
+            <i class="bullet"></i>
+            <div class="alertrow" style="flex:1">
+                <div>
+                    <b>Reading changes · ${patientNames[patientCode] || patientCode}</b>
+                    <div class="alert-details">
+    ${changes.map(change => `
+        <div class="alert-metric">
+            <b>${change.label}</b>
+            <p>${change.value} ${change.unit}</p>
+            <small>
+                Reference range:
+                ${change.min}–${change.max} ${change.unit}
+            </small>
+            <p>${change.condition}</p>
+            <small>
+                Clinical review is recommended.
+            </small>
+        </div>
+    `).join("")}
+</div>
+                    <div class="alertmeta">
+                        <span class="pill ${needsReview ? "warn" : ""}">
+    ${needsReview ? "Needs review" : "Reviewed"}
+</span>
+                        <span class="muted">Patient · ${patientNames[patientCode] || patientCode}</span>
+                    </div>
+                </div>
+                
+                <button class="reviewbtn" type="button">
+    ${needsReview ? "Mark reviewed" : "Undo review"}
+</button>
+            </div>
+        </div>
+    `;
+});
+
+document.querySelectorAll("#alertList .reviewbtn").forEach(btn => {
+btn.addEventListener("click", async () => {
+const row = btn.closest(".alert");
+const pill = row.querySelector(".pill");
+    if (row.dataset.status === "reviewed") {
+        row.dataset.status = "open";
+        row.classList.remove("reviewed");
+
+        pill.textContent = "Needs review";
+        pill.className = "pill warn";
+
+        btn.textContent = "Mark reviewed";
+    } else {
+        row.dataset.status = "reviewed";
+        row.classList.add("reviewed");
+
+        pill.textContent = "Reviewed";
+        pill.className = "pill";
+
+        btn.textContent = "Undo review";
+    }
+
+  const { error: saveError } = await supabaseClient
+    .from("alert_reviews")
+    .upsert({
+        patient_code: row.dataset.patient,
+        status: row.dataset.status,
+        updated_at: new Date().toISOString()
+    });
+
+if (saveError) {
+    console.error("Alert review save error:", saveError);
+}
+
+filterAlerts();
+    const overviewList = document.getElementById("overviewAlertsList");
+
+overviewList.innerHTML = [...alertList.querySelectorAll(".alert")]
+.map(alert => {
+const copy = alert.cloneNode(true);
+const button = copy.querySelector(".reviewbtn");
+
+    if (button) button.remove();
+
+    return copy.outerHTML;
+}).join("");
+
+document.getElementById("overviewAlerts").textContent =
+alertList.querySelectorAll('.alert[data-status="open"]').length;
+});
+}); 
+
+const overviewList = document.getElementById("overviewAlertsList");
+
+overviewList.innerHTML = [...alertList.querySelectorAll(".alert")]
+.map(alert => {
+const copy = alert.cloneNode(true);
+const button = copy.querySelector(".reviewbtn");
+    if (button) button.remove();
+
+    return copy.outerHTML;
+}).join("");
+
+document.getElementById("overviewAlerts").textContent =
+    alertList.querySelectorAll('.alert[data-status="open"]').length;
+filterAlerts();
+}
+
+async function loadOverviewStats() {
+const { count: patientsCount, error: patientsError } =
+await supabaseClient
+.from("patients")
+.select("*", { count: "exact", head: true });
+const { count: readingsCount, error: readingsError } =
+    await supabaseClient
+        .from("readings")
+        .select("*", { count: "exact", head: true });
+
+if (patientsError || readingsError) {
+    console.error("Overview error:", patientsError || readingsError);
+    return;
+}
+document.getElementById("overviewPatients").textContent = patientsCount;
+document.getElementById("overviewReadings").textContent = readingsCount;
+
+}
+async function loadOverviewPatients() {
+const { data: patients, error } = await supabaseClient
+.from("patients")
+.select("*");
+
+if (error) {
+    console.error("Overview patients error:", error);
+    return;
+}
+
+const list = document.getElementById("overviewPatientList");
+
+list.innerHTML = patients.map(patient => `
+    <div class="patient">
+        <div class="pavatar">${patient.patient_name.charAt(0)}</div>
+        <div class="pinfo">
+            <b>${patient.patient_name}</b>
+            <small>${patient.monitoring_group} · Age ${patient.age}</small>
+        </div>
+    </div>
+`).join("");
+}
+
+async function loadOverviewRecentReadings() {
+const { data: readings, error } = await supabaseClient
+.from("readings")
+.select("*")
+.order("id", { ascending: false });
+
+if (error) {
+    console.error("Overview readings error:", error);
+    return;
+}
+
+const { data: patients, error: patientsError } = await supabaseClient
+    .from("patients")
+    .select("patient_code, patient_name");
+
+if (patientsError) {
+    console.error("Overview patients error:", patientsError);
+    return;
+}
+
+const patientNames = Object.fromEntries(
+    patients.map(patient => [patient.patient_code, patient.patient_name])
+);
+
+const latestReadings = [];
+const seenPatients = new Set();
+
+readings.forEach(reading => {
+    if (!seenPatients.has(reading.patient_code)) {
+        latestReadings.push(reading);
+        seenPatients.add(reading.patient_code);
+    }
+});
+
+const tableBody = document.getElementById("overviewRecentReadings");
+
+tableBody.innerHTML = latestReadings.map(reading => `
+    <tr>
+        <td>${patientNames[reading.patient_code] || reading.patient_code}</td>
+        <td>${reading.heart_rate} bpm</td>
+        <td>${reading.skin_temp_c} °C</td>
+        <td><span class="pill">Demo reading</span></td>
+    </tr>
+`).join("");
+}
+
+async function loadOverviewChart() {
+const { data: readings, error } = await supabaseClient
+.from("readings")
+.select("*")
+.order("id", { ascending: false });
+if (error) {
+    console.error("Chart error:", error);
+    return;
+}
+const { data: chartPatients, error: chartPatientsError } = await supabaseClient
+    .from("patients")
+    .select("patient_code, patient_name");
+
+if (chartPatientsError) {
+    console.error("Chart patients error:", chartPatientsError);
+    return;
+}
+
+const chartPatientNames = Object.fromEntries(
+    chartPatients.map(patient => [
+        patient.patient_code,
+        patient.patient_name
+    ])
+);
+const latest = [];
+const seen = new Set();
+
+readings.forEach(reading => {
+    if (!seen.has(reading.patient_code)) {
+        latest.push(reading);
+        seen.add(reading.patient_code);
+    }
+});
+
+latest.sort((a, b) =>
+    a.patient_code.localeCompare(b.patient_code)
+);
+
+const svg = document.getElementById("overviewHeartRateChart");
+
+const points = latest.map((reading, index) => {
+    const x = latest.length === 1
+        ? 333
+        : 42 + index * (583 / (latest.length - 1));
+
+    const value = Math.max(60, Math.min(120, Number(reading.heart_rate)));
+    const y = 160 - ((value - 60) / 60) * 135;
+
+    return {
+    x,
+    y,
+    value,
+    patient: chartPatientNames[reading.patient_code] || reading.patient_code
+};
+});
+
+const line = points.map((p, i) =>
+    `${i === 0 ? "M" : "L"}${p.x} ${p.y}`
+).join(" ");
+
+const area = '${line} L${points[points.length - 1].x} 160 L${points[0].x} 160 Z';
+
+
+svg.innerHTML = `
+    <defs>
+        <linearGradient id="fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#16a6a1" stop-opacity=".2"/>
+            <stop offset="1" stop-color="#16a6a1" stop-opacity="0"/>
+        </linearGradient>
+    </defs>
+
+    <line class="gridline" x1="42" y1="25" x2="625" y2="25"/>
+    <line class="gridline" x1="42" y1="70" x2="625" y2="70"/>
+    <line class="gridline" x1="42" y1="115" x2="625" y2="115"/>
+    <line class="gridline" x1="42" y1="160" x2="625" y2="160"/>
+
+    <text class="axis" x="4" y="28">120</text>
+    <text class="axis" x="4" y="73">100</text>
+    <text class="axis" x="10" y="118">80</text>
+    <text class="axis" x="10" y="163">60</text>
+
+    <path class="area" d="${area}"/>
+    <path class="chartline" d="${line}"/>
+
+    ${points.map(p => `
+        <circle cx="${p.x}" cy="${p.y}" r="4" fill="#16a6a1"/>
+        <text class="axis" x="${p.x}" y="198" text-anchor="middle">
+            ${p.patient}
+        </text>
+    `).join("")}
+`;
+    }
+
+
+loadPatients();
+loadReadings();
+testConnection();
+loadLatestReading();
+loadProfilePatients();
+loadAlerts();
+loadOverviewStats();
+loadOverviewPatients();
+loadOverviewRecentReadings();
+loadOverviewChart();
+
+document.getElementById("profilePatient")
+    .addEventListener("change", loadPatientProfile);
+
+document.getElementById("refreshReadings").addEventListener("click", loadLatestReading);
+
+document.getElementById("demoPatient").addEventListener("change", loadLatestReading);
+
+
+</script>
+</body></html>
